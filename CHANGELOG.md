@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.0.1 — 2026-04-23
+
+### Fixed
+- Shrunk YAML frontmatter description from 1,087 chars to 232 chars. Fits under Claude Code's 250-char skill-listing cap (introduced in Claude Code 2.1.86) so the skill loads cleanly when invoked by chat routing rather than manual `/skill` call. First-user report showed the skill throwing *"Tool result could not be submitted"* errors on invocation; root cause was description-length truncation mid-parse rather than runtime behavior.
+
 All notable changes to Research Director will be documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) loosely and this project adheres to semantic versioning.

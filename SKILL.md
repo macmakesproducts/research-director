@@ -1,6 +1,6 @@
 ---
 name: research-director
-description: Structured deep-research flow that shapes the user's question, plans the research, executes with web search and synthesis, and delivers a research brief with executive summary, sourced findings carrying confidence signals, open gaps, and recommended next steps. Use whenever the user wants real research on a specific question with a decision at stake — entering a market, evaluating a tool or vendor switch, prepping for an expert appointment (medical, legal, financial) with good questions, making a major personal decision, or any question where "google it" won't produce a synthesis the user can act on. Trigger even when the user doesn't explicitly ask for research — phrases like "help me understand," "what do I need to know about X," "I'm trying to decide between," "what does the research say about," or any substantive question with real stakes that deserves a structured brief rather than a conversational answer.
+description: Structured deep-research flow. Shapes the user's question, plans the research, runs web search and synthesis, delivers a brief with executive summary, sourced findings, gaps, and next steps. Use for any decision that needs research.
 ---
 
 # Research Director
@@ -198,4 +198,4 @@ Feedback is the spec.
 
 ## Version
 
-v1 beta — 2026-04-21.
+v1.0.1 beta — 2026-04-23. (v1.0.0 shipped 2026-04-21; v1.0.1 shrinks frontmatter description to fit loader constraints.)
