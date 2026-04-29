@@ -22,7 +22,7 @@
  ░                          ░
 ```
 
-`✦  one-man shop  ✦  est. 2026  ✦  v1 beta  ✦`
+`✦  one-man shop  ✦  est. 2026  ✦  v1.1 beta  ✦`
 
 > Bring a question with real stakes. The shop shapes it, plans the research, reads the web, and brings you back a brief you can act on.
 
@@ -31,11 +31,11 @@
 ## ═══╡ THE FLOW ╞═══
 
 ```
-   ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
-   │  INTAKE  │───▶│   PLAN   │───▶│ EXECUTE  │───▶│ DELIVER  │
-   └──────────┘    └──────────┘    └──────────┘    └──────────┘
-    0–3 adaptive    scope check     web search +     5-section
-    questions       + approval      synthesis        brief
+   ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
+   │  INTAKE  │───▶│   PLAN   │───▶│ EXECUTE  │───▶│  CRITIC  │───▶│ DELIVER  │
+   └──────────┘    └──────────┘    └──────────┘    └──────────┘    └──────────┘
+    0–3 adaptive    scope check     web search +    six-flag         5-section
+    questions       + approval      synthesis       review           brief
 ```
 
 ---
@@ -115,6 +115,41 @@ The gaps section is load-bearing. Most AI research reads like it covered everyth
 
 ---
 
+## ═══╡ THE SECOND PASS ╞═══
+
+Every brief gets a second pass before it ships. Independent review against six failure categories: blind spots, hallucinations, thin sourcing, missed consultation, quality slippage, and drift from the original question. Each flag carries severity. If the brief trips the threshold — 3+ significant flags or 1+ blocking — the shop runs deeper research on the flagged dimensions and re-checks before delivering.
+
+The flags that survive become the brief's gaps section. That's what makes "what's missing" load-bearing — it's not the producer self-reporting on its own work, it's a reviewer pushing back.
+
+**The dial.** You can adjust how hard the reviewer pushes with `/critic [1-5]` mid-session.
+
+```
+┌─ /critic 1 ─ silent ─────────────────────────────────────────┐
+│ skip the second pass entirely. casual research only.         │
+└──────────────────────────────────────────────────────────────┘
+
+┌─ /critic 2 ─ light ──────────────────────────────────────────┐
+│ blocking flags only. minor and significant suppressed.       │
+└──────────────────────────────────────────────────────────────┘
+
+┌─ /critic 3 ─ standard ───────────────────────────────────────┐
+│ blocking + significant flags surface. normal threshold.      │
+└──────────────────────────────────────────────────────────────┘
+
+┌─ /critic 4 ─ default ────────────────────────────────────────┐
+│ full taxonomy. retry triggers at 3+ significant or 1+ block. │
+└──────────────────────────────────────────────────────────────┘
+
+┌─ /critic 5 ─ adversarial ────────────────────────────────────┐
+│ full taxonomy. ONE significant flag triggers a retry.        │
+│ for stakes high enough you want the reviewer fighting.       │
+└──────────────────────────────────────────────────────────────┘
+```
+
+Default is 4. The dial persists for the session unless you change it.
+
+---
+
 ## ═══╡ THE FLASH SHEET ╞═══
 
 What this skill is good at. Pick your piece:
@@ -153,7 +188,8 @@ A Google search won't quite do it. Hiring an analyst is overkill. That's the mid
 
 1. **Shapes the question before researching.** Quick intake (0–3 questions) so the output matches the decision.
 2. **Scope discipline.** Oversized topics get decomposed at the plan stage rather than thinned, truncated, or fabricated to fit.
-3. **Honest about its own limits.** Gaps and per-finding confidence ratings are non-optional.
+3. **A real second look.** Independent review pass against six failure categories before delivery. Flags that survive become the gaps section. The producer doesn't grade its own paper.
+4. **Honest about its own limits.** Gaps and per-finding confidence ratings are non-optional.
 
 ---
 
