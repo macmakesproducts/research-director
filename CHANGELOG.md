@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.1.0 — 2026-04-29
+
+### Added
+- **Phase 4 — Critic Review.** New independent review pass between Execute and Deliver. Runs against a six-flag taxonomy (blind spot / hallucination / thin research / missed consultation / quality slippage / drift), each flag carrying severity (blocking / significant / minor) and a required actionable recommendation. Inspired by the Critic agent canon developed in Anthropic-adjacent multi-agent systems where producing agents have structural production bias and a dedicated reviewer role catches what the producer is too close to see.
+- **Threshold-driven auto-retry.** When the Critic produces 3+ significant flags or 1+ blocking flag, the skill auto-triggers one round of deeper research targeted at the specific dimensions the flags named, then re-consolidates and re-Critics. Capped at one retry to prevent indefinite loops. If the second pass still trips threshold, the brief ships with an honest "did not fully clear Critic review" note in the executive summary.
+- **`/critic [1-5]` slash command.** Five-level dial for the user to adjust the Critic's rigor. 1 = silent (skip review), 2 = light (blocking flags only), 3 = standard, 4 = default (full taxonomy, normal threshold), 5 = adversarial (1 significant flag triggers retry). Persists for the session unless changed. `/critic` with no number triggers an immediate review of work-so-far at current dial.
+- **Critic flags construct the Gaps section.** Surviving flags at severity ≥ significant become the Open Questions / Gaps section of the brief — making the honesty layer structurally adversarial rather than producer-self-reported.
+- **Sub-agent execution when available.** When the environment supports Task-tool or sub-agent invocation, the Critic runs as a separate Claude call with the consolidated research handed in as context. Falls back to inline-register-switch in claude.ai web sessions where sub-agents aren't available.
+
+### Changed
+- Flow expanded from four phases to five (Intake / Plan / Execute / Critic Review / Deliver).
+- Behavioral rules updated to reference the Critic dial as a peer to `run as-is` for skip behavior.
+
 ## v1.0.1 — 2026-04-23
 
 ### Fixed
