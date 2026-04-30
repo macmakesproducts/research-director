@@ -1,5 +1,22 @@
 # Changelog
 
+## v1.2.2 — 2026-04-30
+
+Same-day patch on v1.2.1 after a second smoke test surfaced a different failure mode than v1.2.0.
+
+### Fixed
+- **Worked example added at end of output contract.** v1.2.1 made the output contract "non-negotiable" through prose instruction, but the second smoke test on Q2 produced a brief with substituted section names ("Bottom line" instead of "Executive summary," "What this won't do" instead of "Open questions / gaps") and merged sections (Recommended next steps folded into "What to ask your PT," Sources rendered inline rather than as a consolidated list). The producer was treating section names as flexible. v1.2.2 adds a complete worked-example brief at the end of the output contract showing exact section headers, exact gap-entry format with category-in-parens and Recommendation:, and exact Sources list format. The worked example becomes the model's pattern-match target.
+- **Verbatim section headers required.** Adds explicit verbatim-required section header block at the top of Phase 4: "## Executive summary / ## Key findings / ## Open questions / gaps / ## Recommended next steps / ## Sources" — these exact strings must appear. Adds "Renaming, merging, or omitting sections is not allowed" language so the failure mode v1.2.1 hit is named directly.
+
+### Why this happened (the spec-design lesson, refined)
+v1.2.1's lesson was *"structure beats intention"* — make the discipline a sub-step, not a register-switch. v1.2.2's lesson is the next layer: *"a worked example beats prose instruction."* When prose instruction says "the brief uses these five sections," the model has interpretation latitude. When prose instruction says "the brief looks like THIS [embedded example]," the model has a literal target to match against. Worked examples collapse the interpretation gap. This is a meaningful refinement of how to write skills: for any structural guarantee that needs to hold, embed a worked example of the structure rather than describing it.
+
+### Failure mode pattern across v1.2.x patches
+- **v1.2.0 → v1.2.1:** omission failure (sections didn't appear). Fix: structural guarantees as mandatory sub-steps.
+- **v1.2.1 → v1.2.2:** substitution failure (sections appeared with different names). Fix: worked example as pattern-match target.
+
+The shape of these failures is itself useful methodology. When asking a model for structured output via prose-spec, expect: omission first, substitution second. The fixes are: (a) make structure mandatory, then (b) show the model what "correct" looks like.
+
 ## v1.2.1 — 2026-04-30
 
 Same-day patch on v1.2.0 after smoke test surfaced two failure modes.

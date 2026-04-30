@@ -5,7 +5,7 @@ description: Structured deep-research flow. Shapes the user's question, plans th
 
 # Research Director
 
-**Status:** v1.2.1 beta. Early and incomplete. Feedback: `macmakesproducts+research-director@gmail.com`.
+**Status:** v1.2.2 beta. Early and incomplete. Feedback: `macmakesproducts+research-director@gmail.com`.
 
 ## What this skill does
 
@@ -99,7 +99,17 @@ The pattern statement is a forcing function for synthesis depth. Without it, the
 
 ### Phase 4 — Deliver
 
-The output contract is non-negotiable. **Every brief contains all five sections, in this exact order, with explicit headers**: Executive summary / Key findings / Open questions / gaps / Recommended next steps / Sources. No exceptions. A brief that omits a section has not completed Phase 4 and must be regenerated. The five sections are how this skill differs from a chat answer; if the contract isn't visible to the user, the skill didn't run.
+The output contract is non-negotiable. **Every brief contains all five sections, in this exact order, using these exact section headers (verbatim):**
+
+```
+## Executive summary
+## Key findings
+## Open questions / gaps
+## Recommended next steps
+## Sources
+```
+
+Renaming sections (e.g. "Bottom line" instead of "Executive summary," "What this won't do" instead of "Open questions / gaps"), merging sections (e.g. folding Recommended next steps into a "What to ask" section), or omitting sections is **not allowed**. The five sections are how this skill differs from a chat answer; if the contract isn't visible to the user with these exact headers, the skill didn't run. A brief that fails the contract has not completed Phase 4 and must be regenerated before delivery.
 
 Phase 4 has two sub-steps. **Both are mandatory.** Sub-step 4b cannot be skipped, deferred, or assumed.
 
@@ -142,31 +152,124 @@ After delivering the brief, offer the user feedback capture in the chat (process
 
 ## Output contract
 
-Every brief produced by this skill has these sections, in this order:
+**The brief uses these exact section headers, in this order, no exceptions:**
 
-### 1. Executive summary
-3–5 sentences synthesizing the most important findings for the user's stated decision or audience. Built from the synthesis-pattern statement produced at the end of Phase 3 — the pattern is the spine. The executive summary names the cross-cutting pattern, then briefly anchors it in the strongest evidence; it does not list findings.
+```
+## Executive summary
+## Key findings
+## Open questions / gaps
+## Recommended next steps
+## Sources
+```
 
-### 2. Key findings
-A structured list. Each finding carries:
-- The finding itself, in one or two sentences.
-- The source(s) that support it.
-- A **confidence signal** — high / medium / low — based on source quality, corroboration across sources, and how recent or stable the evidence is.
+Renaming a section is non-compliance. Merging two sections into one is non-compliance. Omitting a section is non-compliance. Aliasing ("Bottom line" instead of "Executive summary," "What this won't do" instead of "Open questions / gaps") is non-compliance. The literal section headers above appear in every brief, exactly as written.
 
-### 3. Open questions / gaps
-What the research didn't answer, and why. Every brief includes this section, even when the research was broadly successful. Naming what's missing is what makes the brief trustworthy.
+### What goes in each section
 
-Authored adversarially per Phase 4. Each entry takes the shape:
+**Executive summary** — 3–5 sentences synthesizing the most important findings for the user's stated decision or audience. Built from the synthesis-pattern statement produced at the end of Phase 3. Names the cross-cutting pattern, then briefly anchors it in the strongest evidence; does not list findings.
 
-- **[One-sentence statement of the gap, framed for user action.]** *(Category in parentheses.)* Recommendation: [what would close the gap — another research pass, a specific source, a conversation with a specific kind of expert.]
+**Key findings** — A structured list. Each finding is one or two sentences, followed by sources and a confidence signal (high / medium / low). Format:
 
-### 4. Recommended next steps
-If the user stated a decision or action, what the research suggests about that decision. If not, what the user might want to look into next — another research pass, a conversation with a specific kind of expert, a specific document or dataset worth finding.
+- *[Finding in one or two sentences.]* Sources: [source 1, source 2]. Confidence: [high/medium/low — brief reason].
 
-### 5. Sources
-The sources actually consulted, with brief context for each: what it contributed, its recency, any caveat about its reliability.
+**Open questions / gaps** — Authored adversarially per Phase 4b. Each entry uses this exact shape:
+
+- **[One-sentence statement of the gap, framed for user action.]** *(Category.)* Recommendation: [actionable specific recommendation].
+
+Where *Category* is one of: *Blind spot, Hallucination, Thin research, Missed consultation, Quality slippage, Drift.* The category appears in italicized parentheses, exactly as shown in the example below. Without the category and the recommendation, the entry is incomplete and the brief has not finished Phase 4b.
+
+**Recommended next steps** — Actionable items tied to the user's stated decision. If the user stated a decision or action, what the research suggests about that decision. If not, what the user might want to look into next.
+
+**Sources** — Consolidated list of every source actually cited, in a single block at the end of the brief. Each entry: source name, URL or citation, brief context (what it contributed, its recency, any reliability caveat). Inline citations alone do not satisfy this section — the consolidated list at the end is required.
 
 **Never invent sources.** If the research can't find a source for a claim, flag the claim as unsourced or drop it. Fabricated citations are a ship-blocking failure.
+
+### Worked example — what a compliant brief looks like
+
+This is a short worked example showing exact headers, gap-entry format, and section structure. Use this as a template the brief should match. The topic is illustrative; what matters is the shape.
+
+---
+
+## Executive summary
+
+The available evidence on red light therapy for chronic Achilles tendinopathy converges on a single pattern: it produces a clinically meaningful but modest effect *only* when paired with eccentric loading and dosed at WALT-recommended parameters. Standalone use is underwhelming; trials reporting null results consistently used under-dosed protocols. The literature's apparent disagreement (Naterstad 2022 positive vs. Martimbianco 2020 inconclusive) resolves to a dose-stratification question, not an effectiveness question.
+
+## Key findings
+
+- *WALT-recommended doses combined with eccentric exercise reduce pain by ~18 mm on a 100 mm VAS at therapy completion, vs. ~13 mm reduction across all dose conditions pooled.* Sources: Naterstad et al. 2022 (BMJ Open meta-analysis, 18 RCTs); Stergioulas 2008 (foundational RCT, 52 athletes). Confidence: medium-high — pooled trial data, mechanism is plausible, sample sizes per trial small.
+
+- *The Stergioulas RCT showed LLLT + eccentric exercise reached at 4 weeks the pain levels reached by placebo + eccentric exercise at 12 weeks.* Source: Stergioulas 2008. Confidence: high for the specific finding; medium for generalization beyond athletic populations.
+
+- *The 2020 Martimbianco systematic review rated the evidence as low-to-very-low certainty without subgrouping by dose.* Source: Martimbianco 2020 (Cochrane-style review). Confidence: high that this is the published conclusion; the methodology choice (no dose stratification) explains the discrepancy with Naterstad.
+
+## Open questions / gaps
+
+- **Whether Class IV high-power laser therapy produces effects equivalent to LLLT at WALT parameters is not established.** *(Thin research.)* Recommendation: ask a sports medicine physician about the device class and J/cm² dose your PT's equipment delivers; the WALT parameters apply specifically to LLLT (Class 3B), and Class IV evidence is sparser.
+
+- **The brief does not address how response is measured during a 12-session course; the user may need an interim check the research did not specify.** *(Missed consultation.)* Recommendation: ask the PT for a baseline VISA-A score and a re-measurement at 4 weeks; if the score has not improved by ~10 mm equivalent on the 100 mm VAS, re-evaluate the protocol before completing the full course.
+
+- **Trials cluster in mid-portion Achilles tendinopathy; the user's specific tendinopathy location was not specified during intake.** *(Blind spot.)* Recommendation: confirm with the PT whether the diagnosis is mid-portion or insertional; the evidence base is weaker for insertional.
+
+## Recommended next steps
+
+- Bring this brief to the next PT appointment. Ask for the device's wavelength (target: 780–904 nm), dose per session (target: ≥6 J per point across multiple points along the tendon), and frequency (target: 2–3x/week for 8–12 weeks).
+- Continue eccentric loading (Alfredson protocol) regardless of laser use; the loading is the established intervention, the laser is the accelerator.
+- If the PT cannot specify per-session Joules or wavelength, that's a yellow flag — request the equipment specs in writing or escalate to a sports medicine physician.
+
+## Sources
+
+- Naterstad et al. 2022, BMJ Open. *"Photobiomodulation therapy for tendinopathy and plantar fasciitis: a systematic review and meta-analysis."* — primary pooled-evidence source; 18 RCTs; introduced the dose-stratification analysis that resolved earlier conflicting reviews.
+- Stergioulas 2008, *American Journal of Sports Medicine*. — foundational RCT showing LLLT + eccentric exercise vs. placebo + eccentric exercise.
+- Martimbianco 2020. — systematic review rating evidence as low-to-very-low; methodology critique: did not subgroup by dose.
+- World Association for Laser Therapy (WALT) 2010 Achilles tendinopathy treatment recommendations. — dose parameters for LLLT.
+- Alfredson protocol (Alfredson 1998). — eccentric loading reference standard for chronic mid-portion Achilles tendinopathy.
+
+---
+
+The above example shows: exact section headers, exec summary built from a synthesis pattern (the dose-stratification reconciliation), key findings with sources + confidence inline, gap entries with category in italicized parens + actionable recommendation, recommended next steps tied to the user's situation, sources consolidated at the end. **Every brief matches this shape.**
+
+### Worked example — the exact shape of a brief
+
+The model output below is a complete, correct brief. Use it as the template. The headers, gap-entry format, source format, and structural ordering are all required. Vary the content for the user's actual question; do not vary the structure.
+
+---
+
+## Executive summary
+
+The cross-cutting pattern across the literature is that low-level laser therapy (LLLT) for chronic Achilles tendinopathy works as a modest accelerator on top of eccentric loading — but only at near-infrared wavelengths and World Association for Laser Therapy (WALT) doses. Trials that disagree on outcome largely agree once stratified by dose: adequately-dosed protocols show ~13 mm pain reduction on a 100 mm VAS; under-dosed protocols don't. The practical interpretation is "probably helps it work faster, won't replace the loading work."
+
+## Key findings
+
+- **Pooled meta-analysis at WALT-recommended doses shows clinically meaningful pain reduction.** The 2022 Naterstad meta-analysis (18 RCTs of LLLT for lower-extremity tendinopathy) found ~13 mm reduction on 100 mm VAS at therapy completion, ~14 mm at follow-up when WALT doses were used. Above the ~10 mm clinical-meaningfulness threshold. *Source: Naterstad et al. 2022, BMJ Open. Confidence: medium-high.*
+- **The strongest effect is as an adjunct to eccentric loading, not as a standalone.** Stergioulas 2008 RCT of 52 chronic AT patients found LLLT + eccentric loading reached at 4 weeks the pain-reduction level the placebo + eccentric group reached at 12 weeks — same destination, ~8 weeks faster. *Source: Stergioulas 2008, AJSM. Confidence: medium.*
+- **Wavelength matters: near-infrared (780–904 nm) reaches tendon depth; visible red (630–660 nm) does not.** Most positive trials used near-infrared; consumer "red light panels" at 660 nm produce too little tendon-depth penetration to match the trial parameters. *Source: WALT 2010 dosing guidelines. Confidence: high on wavelength physics, medium on consumer-panel non-equivalence.*
+- **Disagreeing reviews resolve to dose stratification.** The Martimbianco 2020 review rated certainty of evidence as low to very low and found insufficient support; the disagreement with Naterstad 2022 is that Martimbianco didn't subgroup by dose. The negative trials clustered below WALT thresholds. *Source: Martimbianco 2020, Cochrane-style review. Confidence: medium — explains the literature's surface contradiction.*
+
+## Open questions / gaps
+
+- **The brief leans on a meta-analysis whose constituent trials are mostly small (n=20–60).** *(Thin research.)* Recommendation: when discussing with a PT, frame this as "probably effective at WALT doses" rather than "established effective" — there are no large multi-center RCTs.
+- **Consumer red-light-panel efficacy at non-NIR wavelengths is not well-studied for tendon depth specifically.** *(Blind spot.)* Recommendation: if the user is considering home red-light panels rather than in-clinic LLLT, this brief does not cover that comparison; a separate research pass on home photobiomodulation devices would close the gap.
+- **The user's specific tendinopathy stage (acute, sub-acute, chronic), prior treatment history, and pain trajectory are not captured.** *(Missed consultation.)* Recommendation: the dose recommendation and protocol fit the chronic mid-portion AT pattern in the trials; the user's PT should adjust based on the user's clinical specifics, which this brief cannot cover.
+- **Class IV "high-power" laser devices are sometimes substituted for LLLT in practice but operate outside the LLLT trial parameters.** *(Blind spot.)* Recommendation: the user should confirm with their PT whether the device is LLLT-class (Class 3B) at WALT parameters or Class IV; the evidence base in this brief applies to the former.
+
+## Recommended next steps
+
+1. Ask the PT directly: "What's the device, what's the wavelength in nanometers, and what's the per-session Joule dose?" If they can't answer the Joule question, that's a yellow flag — it's the parameter that determines whether the protocol is in the effective window.
+2. Frame the request as adjunct to eccentric loading, not replacement. Specifically ask for WALT-dosed LLLT (≥6 J per point, near-infrared) 2–3×/week for 8–12 weeks alongside the loading program.
+3. Track VISA-A scores at baseline, week 4, and week 12 to know empirically whether the LLLT addition is doing anything for *your* tendon, since trial-pooled effects don't predict individual response.
+4. If only a low-power red-light panel is available (630–660 nm range), the evidence base in this brief doesn't directly apply. Treat it as low-cost, low-risk, but don't pay extra for it.
+
+## Sources
+
+- **Naterstad et al. 2022, BMJ Open** — Pooled meta-analysis of 18 RCTs of LLLT for lower-extremity tendinopathy, stratified by WALT-recommended dosing. Strongest single source for "works at correct dose." Recent.
+- **Stergioulas 2008, American Journal of Sports Medicine** — The landmark RCT for LLLT + eccentric loading on chronic Achilles tendinopathy. Older but foundational; mechanism evidence anchored here.
+- **Martimbianco 2020, Cochrane-style review** — The skeptical review used to calibrate the certainty claim. Important for honest framing of "moderate" rather than "strong" evidence.
+- **WALT 2010 dosing guidelines, World Association for Laser Therapy** — The dose-and-wavelength source. Industry-standard parameter reference.
+- **Tumilty 2012, Photomedicine and Laser Surgery** — Earlier meta-analysis showing the split between positive and inconclusive trials. Used to triangulate the dose-stratification interpretation.
+
+---
+
+The above is what a complete v1.2.2 brief looks like: five sections in the exact required order; exact section headers; gaps section with category-in-parens and Recommendation: format; Sources section as a consolidated list with one-line context per entry. Match this structure for every brief produced by the skill.
 
 ## Behavioral rules
 
@@ -262,4 +365,4 @@ Feedback is the spec.
 
 ## Version
 
-v1.2.1 beta — 2026-04-30. (v1.0 shipped 2026-04-21. v1.0.1 shipped 2026-04-23 with frontmatter description shrink. v1.1.0 shipped 2026-04-29 with the Critic phase + dial. v1.2.0 shipped 2026-04-30 with eval-driven redesign: process/product split, Critic narrowed to gaps authoring, dial removed, synthesis-pattern naming. v1.2.1 same-day patch after v1.2.0 smoke test surfaced two failure modes: (a) the output contract was being abridged — the five sections were treated as suggestion not requirement, and at least one brief shipped without a gaps section entirely; (b) the adversarial gaps-section review was conditional on the producer remembering to switch registers, and the producer didn't. v1.2.1 makes the output contract non-negotiable in behavioral rules and at the top of Phase 4, and splits Phase 4 into 4a Draft + 4b Gaps as two mandatory sub-steps with explicit "non-skippable" language.)
+v1.2.2 beta — 2026-04-30. (v1.0 shipped 2026-04-21. v1.0.1 shipped 2026-04-23 with frontmatter description shrink. v1.1.0 shipped 2026-04-29 with the Critic phase + dial. v1.2.0 shipped 2026-04-30 with eval-driven redesign: process/product split, Critic narrowed to gaps authoring, dial removed, synthesis-pattern naming. v1.2.1 same-day patch for output contract enforcement and Phase 4a/4b mandatory split. v1.2.2 same-day patch after a second smoke test surfaced a substitution failure: the producer rewrote section names ("Bottom line" instead of "Executive summary," "What this won't do" instead of "Open questions / gaps") rather than the omission failure of v1.2.0. Prose-spec-as-suggestion was the underlying problem. v1.2.2 adds (a) verbatim-required section headers in the spec, (b) explicit "renaming, merging, or omitting sections is not allowed" language, (c) a complete worked-example brief at the end of the output contract showing exact section headers, exact gap-entry format, exact source list format. The worked example is the model's pattern-match target.)

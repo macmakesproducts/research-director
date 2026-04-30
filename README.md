@@ -22,7 +22,7 @@
  ░                          ░
 ```
 
-`✦  one-man shop  ✦  est. 2026  ✦  v1.2.1 beta  ✦`
+`✦  one-man shop  ✦  est. 2026  ✦  v1.2.2 beta  ✦`
 
 > Bring a question with real stakes. The shop shapes it, plans the research, reads the web, and brings you back a brief you can act on.
 
