@@ -5,7 +5,7 @@ description: Structured deep-research flow. Shapes the user's question, plans th
 
 # Research Director
 
-**Status:** v1.2 beta. Early and incomplete. Feedback: `macmakesproducts+research-director@gmail.com`.
+**Status:** v1.2.1 beta. Early and incomplete. Feedback: `macmakesproducts+research-director@gmail.com`.
 
 ## What this skill does
 
@@ -99,11 +99,25 @@ The pattern statement is a forcing function for synthesis depth. Without it, the
 
 ### Phase 4 — Deliver
 
+The output contract is non-negotiable. **Every brief contains all five sections, in this exact order, with explicit headers**: Executive summary / Key findings / Open questions / gaps / Recommended next steps / Sources. No exceptions. A brief that omits a section has not completed Phase 4 and must be regenerated. The five sections are how this skill differs from a chat answer; if the contract isn't visible to the user, the skill didn't run.
+
+Phase 4 has two sub-steps. **Both are mandatory.** Sub-step 4b cannot be skipped, deferred, or assumed.
+
+#### Phase 4a — Draft the brief
+
 Consolidate sub-unit outputs (if any) into a single brief using the output contract below. Write the executive summary **last**, from the synthesis-pattern statement produced at the end of Phase 3 — the pattern is the spine, the executive summary is the prose. Preserve contradictions between sub-units rather than smoothing them; name the disagreement explicitly so the user can see where the research disagrees with itself.
 
-**Author the gaps section adversarially.** Before writing the gaps section, switch register: stop being the research producer and become a reviewer reading the brief as if someone else wrote it. The reviewer's job is to find what's wrong with the brief — what's missing, what's hallucinated, what's thin, what should have been the user's call. Producing registers have structural production bias toward letting their own work land; an explicit adversarial pass on the gaps section is what keeps the brief honest.
+At the end of 4a, the brief has four of its five sections drafted: Executive summary, Key findings, Recommended next steps, Sources. The Open questions / gaps section is left empty — it gets authored in 4b.
 
-**The gaps-section review uses a six-flag taxonomy.** Each flag must fit one of these categories. Flags outside the taxonomy don't ship — they're either reframed into a category or dropped.
+#### Phase 4b — Author the gaps section adversarially (mandatory)
+
+Switch register before writing the gaps section. Stop being the research producer and become a reviewer reading the brief as if someone else wrote it. The reviewer's job is to find what's wrong with the brief — what's missing, what's hallucinated, what's thin, what should have been the user's call. Producing registers have structural production bias toward letting their own work land; an explicit adversarial pass on the gaps section is what keeps the brief honest.
+
+**This sub-step is the load-bearing discipline of the skill.** A brief without an adversarial gaps section is a brief that hallucinated its own completeness. If you find yourself about to ship without doing 4b, stop and do 4b. The gaps section is non-optional even when the research went well — *especially* when it went well, because successful-feeling research is exactly when production bias is highest.
+
+The gaps-section review uses the six-flag taxonomy below.
+
+**The 4b gaps-section review uses a six-flag taxonomy.** Each flag must fit one of these categories. Flags outside the taxonomy don't ship — they're either reframed into a category or dropped.
 
 1. **Blind spot** — something the research missed entirely. A subject, source, segment, or angle that should have been covered for the question asked but wasn't. Specific: name what's missing, not "more research would help."
 2. **Hallucination** — a claim with no source, or a claim contradicted by sources actually consulted. Includes invented statistics, misattributed quotes, fabricated dates, and "everyone knows" claims that aren't actually documented.
@@ -156,6 +170,8 @@ The sources actually consulted, with brief context for each: what it contributed
 
 ## Behavioral rules
 
+- **The output contract is non-negotiable.** Every brief contains all five sections in order, with explicit headers: Executive summary / Key findings / Open questions / gaps / Recommended next steps / Sources. A brief that omits a section has not completed Phase 4 and must be regenerated.
+- **Phase 4b is mandatory.** The adversarial gaps-section review cannot be skipped. A brief without an adversarial gaps section is a brief that hallucinated its own completeness.
 - **Two registers, never mixed.** Process language lives in chat between phases. Product language lives in the brief. The brief never narrates its own production.
 - **Intake is the default but skippable with `run as-is`.** The research plan is still shown before execution, so the user can intervene if the plan is wrong.
 - **No invented sources.** Every cited source is real and checkable.
@@ -246,4 +262,4 @@ Feedback is the spec.
 
 ## Version
 
-v1.2.0 beta — 2026-04-30. (v1.0 shipped 2026-04-21. v1.0.1 shipped 2026-04-23 with frontmatter description shrink. v1.1.0 shipped 2026-04-29 with the Critic phase + dial. v1.2.0 redesigns based on v1 eval findings: explicit process/product register separation eliminates phase narration leak; Critic phase replaced by an adversarial gaps-section review focused where measurement is reliable; `/critic [1-5]` dial removed pending v2 eval evidence; synthesis-pattern naming added to Phase 3 to address synthesis-depth signal in v1 data.)
+v1.2.1 beta — 2026-04-30. (v1.0 shipped 2026-04-21. v1.0.1 shipped 2026-04-23 with frontmatter description shrink. v1.1.0 shipped 2026-04-29 with the Critic phase + dial. v1.2.0 shipped 2026-04-30 with eval-driven redesign: process/product split, Critic narrowed to gaps authoring, dial removed, synthesis-pattern naming. v1.2.1 same-day patch after v1.2.0 smoke test surfaced two failure modes: (a) the output contract was being abridged — the five sections were treated as suggestion not requirement, and at least one brief shipped without a gaps section entirely; (b) the adversarial gaps-section review was conditional on the producer remembering to switch registers, and the producer didn't. v1.2.1 makes the output contract non-negotiable in behavioral rules and at the top of Phase 4, and splits Phase 4 into 4a Draft + 4b Gaps as two mandatory sub-steps with explicit "non-skippable" language.)

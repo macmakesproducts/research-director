@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.2.1 — 2026-04-30
+
+Same-day patch on v1.2.0 after smoke test surfaced two failure modes.
+
+### Fixed
+- **Output contract enforcement.** v1.2.0 smoke test on Q2 (red light therapy for Achilles tendinopathy) produced a brief that omitted the Open questions / gaps section entirely and the Sources section as a separate block, treating the five-section contract as a suggestion rather than a requirement. v1.2.1 makes the output contract non-negotiable in the behavioral rules ("A brief that omits a section has not completed Phase 4 and must be regenerated") and adds the same enforcement language at the top of Phase 4.
+- **Phase 4 split into mandatory sub-steps.** v1.2.0 collapsed the adversarial gaps-section review into "switch register when authoring the gaps section." That register-switch was conditional on the producer remembering to do it, and the producer didn't. v1.2.1 splits Phase 4 into 4a (Draft the brief) and 4b (Author the gaps section adversarially), with 4b explicitly marked non-skippable. Adds the line "If you find yourself about to ship without doing 4b, stop and do 4b" — direct anti-skip language modeled after how the AI Branding Agency Critic resists production bias.
+
+### Why this happened
+The v1.2.0 redesign correctly diagnosed two problems (process/product narration leak, dial unproven) but in narrowing the Critic from a separate phase to a register-switch, weakened the structural guarantee that the gaps section gets authored at all. v1.1.0's Phase 4 forced the review by making it a phase; v1.2.0 made it a register-switch and the register-switch got skipped. v1.2.1 keeps the v1.2.0 narrowing (gaps section only, not whole-brief review) but restores the structural guarantee by making Phase 4b a mandatory sub-step with explicit anti-skip language.
+
+### What this taught us about spec design
+A behavioral expectation expressed as register-switching is structurally weaker than the same expectation expressed as a phase or sub-step. "Switch your mindset before doing X" can be ignored without the model knowing it ignored anything; "Sub-step Y is mandatory before shipping" cannot. For load-bearing disciplines, structure beats intention.
+
 ## v1.2.0 — 2026-04-30
 
 Redesign based on v1 eval findings (see [research-director-evals](https://github.com/macmakesproducts/research-director-evals)).
