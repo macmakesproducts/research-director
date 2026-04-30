@@ -22,7 +22,7 @@
  ░                          ░
 ```
 
-`✦  one-man shop  ✦  est. 2026  ✦  v1.1 beta  ✦`
+`✦  one-man shop  ✦  est. 2026  ✦  v1.2 beta  ✦`
 
 > Bring a question with real stakes. The shop shapes it, plans the research, reads the web, and brings you back a brief you can act on.
 
@@ -31,11 +31,12 @@
 ## ═══╡ THE FLOW ╞═══
 
 ```
-   ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
-   │  INTAKE  │───▶│   PLAN   │───▶│ EXECUTE  │───▶│  CRITIC  │───▶│ DELIVER  │
-   └──────────┘    └──────────┘    └──────────┘    └──────────┘    └──────────┘
-    0–3 adaptive    scope check     web search +    six-flag         5-section
-    questions       + approval      synthesis       review           brief
+   ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
+   │  INTAKE  │───▶│   PLAN   │───▶│ EXECUTE  │───▶│ DELIVER  │
+   └──────────┘    └──────────┘    └──────────┘    └──────────┘
+    0–3 adaptive    scope check     web search +    5-section brief
+    questions       + approval      synthesis +     with adversarial
+                                    pattern naming  gaps section
 ```
 
 ---
@@ -115,38 +116,17 @@ The gaps section is load-bearing. Most AI research reads like it covered everyth
 
 ---
 
-## ═══╡ THE SECOND PASS ╞═══
+## ═══╡ THE GAPS, AUTHORED HONESTLY ╞═══
 
-Every brief gets a second pass before it ships. Independent review against six failure categories: blind spots, hallucinations, thin sourcing, missed consultation, quality slippage, and drift from the original question. Each flag carries severity. If the brief trips the threshold — 3+ significant flags or 1+ blocking — the shop runs deeper research on the flagged dimensions and re-checks before delivering.
+Every brief's gaps section is written adversarially — explicitly, by switching register from producer to reviewer.
 
-The flags that survive become the brief's gaps section. That's what makes "what's missing" load-bearing — it's not the producer self-reporting on its own work, it's a reviewer pushing back.
+The reviewer's job is to read the brief as if someone else wrote it and find what's wrong: what's missing, what's hallucinated, what rests on a single source it shouldn't, what should have been the user's call instead of an internal assumption, where the research drifted off the question. Each flag fits one of six categories — blind spot, hallucination, thin research, missed consultation, quality slippage, drift — and each carries an actionable recommendation, not just an observation.
 
-**The dial.** You can adjust how hard the reviewer pushes with `/critic [1-5]` mid-session.
+What the user sees in the brief: gap entries framed for action, with the category in parentheses. Not "the Critic flagged X" — that's process language. The gap entry is the user's; the category is the audit trail.
 
-```
-┌─ /critic 1 ─ silent ─────────────────────────────────────────┐
-│ skip the second pass entirely. casual research only.         │
-└──────────────────────────────────────────────────────────────┘
+If the review surfaces something severe enough to make the brief unsafe — fabricated sources, drift severe enough that the actual question wasn't answered — the shop runs targeted research on the flagged dimensions and re-shapes. Capped at one re-run. If flags still remain after that, the brief ships with them surfaced prominently in the gaps section and a calibration note in the executive summary so the user weights the recommendations accordingly.
 
-┌─ /critic 2 ─ light ──────────────────────────────────────────┐
-│ blocking flags only. minor and significant suppressed.       │
-└──────────────────────────────────────────────────────────────┘
-
-┌─ /critic 3 ─ standard ───────────────────────────────────────┐
-│ blocking + significant flags surface. normal threshold.      │
-└──────────────────────────────────────────────────────────────┘
-
-┌─ /critic 4 ─ default ────────────────────────────────────────┐
-│ full taxonomy. retry triggers at 3+ significant or 1+ block. │
-└──────────────────────────────────────────────────────────────┘
-
-┌─ /critic 5 ─ adversarial ────────────────────────────────────┐
-│ full taxonomy. ONE significant flag triggers a retry.        │
-│ for stakes high enough you want the reviewer fighting.       │
-└──────────────────────────────────────────────────────────────┘
-```
-
-Default is 4. The dial persists for the session unless you change it.
+The gaps section is what makes the rest of the brief trustworthy. Coverage that claims completeness is coverage that hallucinated the edges.
 
 ---
 
@@ -188,7 +168,7 @@ A Google search won't quite do it. Hiring an analyst is overkill. That's the mid
 
 1. **Shapes the question before researching.** Quick intake (0–3 questions) so the output matches the decision.
 2. **Scope discipline.** Oversized topics get decomposed at the plan stage rather than thinned, truncated, or fabricated to fit.
-3. **A real second look.** Independent review pass against six failure categories before delivery. Flags that survive become the gaps section. The producer doesn't grade its own paper.
+3. **A real second look in the gaps section.** Before the brief ships, the gaps section is authored by an explicit reviewer pass against six failure categories — not the producer self-reporting on its own work. The producer doesn't grade its own paper.
 4. **Honest about its own limits.** Gaps and per-finding confidence ratings are non-optional.
 
 ---

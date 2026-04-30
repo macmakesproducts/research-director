@@ -5,23 +5,32 @@ description: Structured deep-research flow. Shapes the user's question, plans th
 
 # Research Director
 
-**Status:** v1 beta. Early and incomplete. Feedback: `macmakesproducts+research-director@gmail.com`.
+**Status:** v1.2 beta. Early and incomplete. Feedback: `macmakesproducts+research-director@gmail.com`.
 
 ## What this skill does
 
 Runs a structured deep-research flow for any topic the user brings. Shapes the question through light intake, proposes a research plan, executes the plan using available research tools, and delivers a structured brief that a non-expert can act on.
 
-This skill is distinct from a generic deep-research prompt because it (a) shapes the question *before* researching so the output fits the user's decision, (b) applies scope discipline to prevent thin or truncated output on oversized topics, and (c) enforces an output contract that names what the research *didn't* answer alongside what it did. The gaps section is load-bearing; research that claims complete coverage is research that hallucinated the edges.
+This skill is distinct from a generic deep-research prompt because it (a) shapes the question *before* researching so the output fits the user's decision, (b) applies scope discipline to prevent thin or truncated output on oversized topics, (c) names a cross-cutting synthesis pattern before writing the executive summary, and (d) enforces an output contract whose gaps section is authored by an adversarial review pass — the gaps the brief names are not the producing register's self-report. The gaps section is load-bearing; research that claims complete coverage is research that hallucinated the edges.
+
+## Two registers — process vs. product
+
+The skill operates in two distinct registers and they must never mix.
+
+**Process register** is what Claude says to the user *between* phases — *"I'm going to ask two clarifying questions,"* *"Here's the plan I'm proposing,"* *"Re-running deeper research on X."* This is conversational, lives in chat, and is where the user steers the session.
+
+**Product register** is what appears in the delivered brief — the executive summary, key findings, gaps, recommended next steps, sources. This is neutral-analytical, written for someone with no context on the session, and contains zero references to the skill itself, the phases, the Critic, or anything about *how* the research was produced.
+
+**Hard rule:** the brief never narrates its own production. No *"this brief did a Critic review,"* no *"executing now,"* no *"after running through the four phases."* If a sentence in the brief references the skill or its process, it gets cut. The brief reads as if a research analyst handed it to the user — analysts don't narrate their methodology in the deliverable.
 
 ## The flow
 
-Five phases. Run all five unless the user invokes `run as-is` (skips Phase 1 only) or `/critic 1` (skips Phase 4 only).
+Four phases. Run all four unless the user invokes `run as-is` (skips Phase 1 only).
 
 1. **Intake** — 0–3 adaptive clarifying questions to shape the research.
 2. **Plan** — propose the research plan; user approves or adjusts.
-3. **Execute** — run the research using web search, web fetch, and synthesis.
-4. **Critic Review** — independent review pass against the six-flag taxonomy. May trigger one auto-retry of deeper research if the threshold is tripped.
-5. **Deliver** — produce the structured brief with surviving Critic flags surfaced in the Gaps section.
+3. **Execute** — run the research using web search, web fetch, and synthesis. Includes a synthesis-pattern naming step before delivery.
+4. **Deliver** — produce the structured brief with the gaps section authored by an adversarial gaps-section review.
 
 ### Phase 1 — Intake
 
@@ -78,84 +87,51 @@ For each unit (one if single-pass, multiple if decomposed):
    - **Hallucination pressure** → tighten source constraints; mark unsupported claims as hypotheses rather than backfilling.
 - Preserve partial output from any strained unit; don't restart from scratch unless the partial showed systemic problems.
 
-Don't report progress between sub-units. Run through to consolidation. The user gets one delivery, not a progress feed.
+Run through to consolidation silently. Don't narrate progress between sub-units. The user gets one delivery, not a progress feed.
 
-When Execute completes, hand off to Phase 4 (Critic Review) before shaping the brief for the user. Do not deliver to the user directly from Phase 3 — Phase 4 is where the honesty discipline gets enforced.
+**Synthesis-pattern naming — required step before Phase 4.** Once the research is consolidated but before any brief gets shaped, explicitly name the cross-cutting pattern in one or two sentences. *"What is the consolidated research saying that wouldn't be obvious from any single source?"* Name it internally — this becomes the spine of the executive summary written in Phase 4. The pattern statement should:
 
-### Phase 4 — Critic Review
+- Identify a finding that emerges from the *combination* of sources, not from any one of them.
+- Hold contradictions explicitly when sources disagree — name the disagreement, don't smooth it.
+- Be one or two sentences, not a paragraph. If it takes a paragraph, the pattern hasn't crystallized yet; do another synthesis pass.
 
-After Execute consolidates findings but **before** the brief gets shaped for the user, run a Critic pass against the six-flag taxonomy below. The Critic is structurally independent from the producing work — it reviews the consolidated research as if it were someone else's, with the explicit job of finding what's wrong. Producing agents have structural production bias toward letting their own output land; the Critic's role is to push back on it.
+The pattern statement is a forcing function for synthesis depth. Without it, the executive summary tends to be a list of findings rather than a synthesis.
 
-**Activation modes — three places the Critic operates:**
+### Phase 4 — Deliver
 
-1. **Phase 4 review (this phase, automatic).** Runs against the consolidated research before the brief is shaped. Produces a flag set with severities. Determines whether to ship, re-research, or escalate.
-2. **Open Questions / Gaps surfacing (Phase 5, automatic).** Surviving Critic flags at severity ≥ significant get surfaced as the gaps section of the delivered brief. The Critic's findings *become* the honesty layer of the output — instead of the producing agent self-reporting gaps, the gaps section is structurally adversarial.
-3. **On-pull (any phase, user-invoked).** The user can invoke the Critic mid-session with the command `/critic` (no severity = trigger immediate review of the work so far) or `/critic [1-5]` to set the dial for the rest of the session.
+Consolidate sub-unit outputs (if any) into a single brief using the output contract below. Write the executive summary **last**, from the synthesis-pattern statement produced at the end of Phase 3 — the pattern is the spine, the executive summary is the prose. Preserve contradictions between sub-units rather than smoothing them; name the disagreement explicitly so the user can see where the research disagrees with itself.
 
-**Sub-agent vs inline execution.** When a Task tool or sub-agent invocation is available in the environment, run the Critic as a separate Claude call with the consolidated research handed in as context. This gives genuine independence — a fresh instance with no production stake in the output. When no sub-agent capability is available (most claude.ai web sessions), run the Critic inline by explicitly switching register: announce internally that you're entering Critic mode, set aside the producing register, and review the work adversarially. Inline mode is the practical default. Sub-agent mode is the higher-ceiling option.
+**Author the gaps section adversarially.** Before writing the gaps section, switch register: stop being the research producer and become a reviewer reading the brief as if someone else wrote it. The reviewer's job is to find what's wrong with the brief — what's missing, what's hallucinated, what's thin, what should have been the user's call. Producing registers have structural production bias toward letting their own work land; an explicit adversarial pass on the gaps section is what keeps the brief honest.
 
-**The six-flag taxonomy.** Every flag the Critic raises must fit one of these categories. Flags outside the taxonomy don't ship — they're either reframed into a category or dropped.
+**The gaps-section review uses a six-flag taxonomy.** Each flag must fit one of these categories. Flags outside the taxonomy don't ship — they're either reframed into a category or dropped.
 
 1. **Blind spot** — something the research missed entirely. A subject, source, segment, or angle that should have been covered for the question asked but wasn't. Specific: name what's missing, not "more research would help."
-2. **Hallucination** — a claim with no source, or a claim contradicted by sources actually consulted. The most ship-blocking category. Includes invented statistics, misattributed quotes, fabricated dates, and "everyone knows" claims that aren't actually documented.
+2. **Hallucination** — a claim with no source, or a claim contradicted by sources actually consulted. Includes invented statistics, misattributed quotes, fabricated dates, and "everyone knows" claims that aren't actually documented.
 3. **Thin research** — a claim built on a single source where multiple are warranted, a section relying on one outlet's framing, or a finding from a source whose reliability the brief should have caveated. The claim may be right, but the evidence behind it is too thin to support the load it's bearing.
 4. **Missed consultation** — the research made a judgment call internally that should have been surfaced to the user. Audience scope, what counts as in-scope, a positioning trade-off, an interpretive choice that changes what the brief recommends. The user should have been the one to make this call.
-5. **Quality slippage** — the brief's voice drifted from neutral-analytical, the structure deviated from the output contract, the executive summary doesn't match the body, sources are cited inconsistently, or the writing reads as content-marketing rather than research. Process discipline failures.
-6. **Drift** — late sections of the research deviate from the locked plan or the original question. The user asked about X; halfway through, the research started answering an adjacent Y. Common when the research gets pulled toward a more interesting tangent than the actual question.
+5. **Quality slippage** — the brief's voice drifted from neutral-analytical, the structure deviated from the output contract, the executive summary doesn't match the body, sources are cited inconsistently.
+6. **Drift** — late sections of the research deviate from the locked plan or the original question. The user asked about X; halfway through, the research started answering an adjacent Y.
 
-**Severity per flag.** Every flag carries one of three severities:
+Each flag is one or two sentences and carries an actionable recommendation — *"the migration cost claim cites only the Linear-marketing case study; second the Atlassian community thread for an opposing view."* Without the recommendation, the flag isn't useful and should be dropped.
 
-- **Blocking** — the brief should not ship in its current form. Hallucinated claims, drift severe enough that the user's actual question wasn't answered, structural quality slippage that breaks the output contract.
-- **Significant** — the brief can ship but the user must see the flag. Thin research on load-bearing claims, missed consultation moments, drift that narrows what the brief actually answers, blind spots on important sub-questions.
-- **Minor** — would improve the brief if addressed but doesn't materially change what the user gets. Stylistic quality slippage, drift on peripheral points, blind spots on adjacent topics that weren't asked about.
+**The gaps section narrates the flags as research-shape statements.** Surfaces flags as gap entries the user can act on — *not* as a list of "the Critic flagged X." Process language stays in the process register; product language is what makes it into the brief.
 
-**Each flag carries an actionable recommendation.** Not "this could be stronger" — "the migration cost claim cites only the Linear-marketing case study; second the Atlassian community thread for an opposing view." Without the recommendation, the flag isn't useful and should be dropped.
+Example flag-to-gap translation:
+- *Critic-internal:* `[Thin research] The migration cost figure cites only the vendor's marketing case study. Recommendation: cross-reference the Atlassian community thread.`
+- *Brief-facing gap entry:* "The migration cost figure is supported only by the vendor's own case study. *(Thin research.)* Recommendation: cross-reference the Atlassian community thread for an independent estimate before treating the figure as a planning input."
 
-**Threshold logic — when to ship vs. re-research.**
+The gap entry includes the category in parentheses for transparency but the framing is decision-relevant for the user, not process-narrative.
 
-After producing the flag set, the Critic computes a ship/retry decision against this threshold:
+**If the adversarial review surfaces flags severe enough to make the brief unsafe to ship** — fabricated sources, drift severe enough that the user's actual question wasn't answered — re-run targeted research on the flagged dimensions, then re-shape the brief. Cap at one re-run pass to avoid infinite loops. If the second pass still surfaces blocking flags, ship the brief with the flags surfaced prominently in the gaps section and a one-line note in the executive summary: *"Several gaps below are load-bearing; the brief's recommendations should be weighted accordingly."* This note is product-register, not process-register — the user sees a calibrated brief, not a process narration.
 
-- **0 blocking + 0–2 significant flags** → ship. Surviving significant flags surface in the brief's Gaps section. Minor flags suppressed in the brief but logged for the Critic's internal pass.
-- **0 blocking + 3+ significant flags** OR **1+ blocking flag** → trigger one auto-retry of deeper research targeted at the specific dimensions the flags named. Then re-Execute on those dimensions, re-consolidate with the prior findings, and re-Critic the combined output. **Cap at one retry.**
-- **Second pass still trips threshold** → ship anyway, but the brief opens with an honest one-line note in the executive summary: "*This brief did not fully clear Critic review; surviving flags are surfaced prominently in the Gaps section below.*" The flags get prominent treatment in Gaps. The user sees the honest state.
-
-**Show the retry happening in real-time.** When auto-retry triggers, the user sees what's happening — not as theater, but because waiting silently while research loops is worse than waiting with context. Pattern: "*Critic flagged \[specific issue\]; running deeper research on \[specific dimension\] before delivering.*" One sentence, then run. After the retry, deliver the brief. Don't narrate the second Critic pass — the user just gets the result.
-
-**Critic dial — `/critic [1-5]`.**
-
-The user can adjust the Critic's rigor with the slash command `/critic [1-5]` at any point in the session. Five levels:
-
-- **`/critic 1`** — silent. Critic phase is skipped entirely. Use only when the user wants casual research and explicit transparency about gaps doesn't matter for the decision.
-- **`/critic 2`** — light. Critic runs, but only blocking flags surface to the user. Significant and minor flags are suppressed. Auto-retry triggers only on blocking flags.
-- **`/critic 3`** — standard. Blocking + significant flags surface. Auto-retry triggers on the standard threshold (3+ significant or 1+ blocking).
-- **`/critic 4`** — default. Full taxonomy active, normal threshold. This is the dial when nothing has been set.
-- **`/critic 5`** — adversarial. Full taxonomy active, threshold tightened. **1+ significant flag triggers auto-retry** (not 3+). Use for high-stakes decisions where the user wants the Critic pushing back hard.
-
-When the user invokes `/critic` with no number, it triggers a Critic review of the work-so-far at the current dial level. Useful mid-Plan, mid-Execute, or after an initial brief if the user wants a second pass.
-
-**Dial defaults.** If the user hasn't set a dial, the default is `/critic 4`. The dial persists for the rest of the session unless changed.
-
-**What the Critic does NOT do:**
-
-- **Doesn't gate.** The Critic flags; the user (or the threshold logic) decides. Even on blocking flags, the user can dismiss with rationale and ship anyway via "ship anyway" or equivalent.
-- **Doesn't generate the brief.** The Critic reviews; the producing register writes. After the Critic pass clears, control returns to the producing register for Phase 5.
-- **Doesn't second-guess taste.** The Critic checks rigor, evidence, drift, and process — not "I would have framed this differently." Stylistic preferences belong to the producing register.
-- **Doesn't flag for the sake of flagging.** Each flag must fit the taxonomy AND carry a specific recommendation. A Critic pass that produces no flags is a valid outcome — research can clear cleanly.
-
-### Phase 5 — Deliver
-
-Consolidate sub-unit outputs (if any) into a single brief using the output contract below. Write the executive summary **last**, from the consolidated corpus — cross-cutting patterns only emerge once all units are visible. Preserve contradictions between sub-units rather than smoothing them; name the disagreement explicitly so the user can see where the research disagrees with itself.
-
-**Surface surviving Critic flags in the Gaps section.** The Open Questions / Gaps section of the brief is built from the Critic's surviving flags at severity ≥ significant, plus any genuine unanswered questions the research itself surfaced. Each Critic flag in the Gaps section appears as: a one-sentence statement of what's missing or unsupported, the Critic category in parentheses (Hallucination / Thin research / Blind spot / Missed consultation / Quality slippage / Drift), and the actionable recommendation. Minor flags are suppressed from the brief but contribute to the Critic's internal scoring.
-
-After delivering the brief, offer the user feedback capture using the pattern in "Offering feedback" below. One line at the end of the brief, not a separate turn.
+After delivering the brief, offer the user feedback capture in the chat (process register), not in the brief itself. See "Offering feedback" below.
 
 ## Output contract
 
 Every brief produced by this skill has these sections, in this order:
 
 ### 1. Executive summary
-3–5 sentences synthesizing the most important findings for the user's stated decision or audience.
+3–5 sentences synthesizing the most important findings for the user's stated decision or audience. Built from the synthesis-pattern statement produced at the end of Phase 3 — the pattern is the spine. The executive summary names the cross-cutting pattern, then briefly anchors it in the strongest evidence; it does not list findings.
 
 ### 2. Key findings
 A structured list. Each finding carries:
@@ -166,11 +142,9 @@ A structured list. Each finding carries:
 ### 3. Open questions / gaps
 What the research didn't answer, and why. Every brief includes this section, even when the research was broadly successful. Naming what's missing is what makes the brief trustworthy.
 
-This section is constructed from the surviving Critic flags at severity ≥ significant (see Phase 4) plus any genuine unanswered questions the research itself surfaced. Each entry takes the shape:
+Authored adversarially per Phase 4. Each entry takes the shape:
 
-- **\[One-sentence statement of the gap.\]** *(Critic category, if applicable.)* Recommendation: \[what would close the gap — another research pass, a specific source, a conversation with a specific kind of expert.\]
-
-The Critic-flag construction means the gaps section is structurally adversarial — it's not the producing register self-reporting on its own work. That's what makes it load-bearing.
+- **[One-sentence statement of the gap, framed for user action.]** *(Category in parentheses.)* Recommendation: [what would close the gap — another research pass, a specific source, a conversation with a specific kind of expert.]
 
 ### 4. Recommended next steps
 If the user stated a decision or action, what the research suggests about that decision. If not, what the user might want to look into next — another research pass, a conversation with a specific kind of expert, a specific document or dataset worth finding.
@@ -182,15 +156,15 @@ The sources actually consulted, with brief context for each: what it contributed
 
 ## Behavioral rules
 
-- **Intake is the default but skippable with `run as-is`.** The research plan is still shown before execution, so the user can intervene if the plan is wrong. `run as-is` bypasses only the clarifying questions.
-- **Critic review is the default but adjustable with `/critic [1-5]`.** Default dial is 4 (full taxonomy, normal threshold). `/critic 1` skips the review entirely. `/critic 5` tightens the threshold for high-stakes decisions. The dial persists for the session unless changed.
+- **Two registers, never mixed.** Process language lives in chat between phases. Product language lives in the brief. The brief never narrates its own production.
+- **Intake is the default but skippable with `run as-is`.** The research plan is still shown before execution, so the user can intervene if the plan is wrong.
 - **No invented sources.** Every cited source is real and checkable.
-- **Honest about limits.** Every brief names the gaps. The gaps section is constructed from the Critic's surviving flags — structurally adversarial by design.
-- **Standalone.** Don't assume context from any prior engagement, project, or external knowledge. Every invocation is self-contained; the brief reads cleanly to someone who has no context on the user's work.
-- **Voice is neutral-analytical.** Not performatively casual, not academic-stiff, not content-marketing. The skill produces research output, not personal writing.
-- **Scope discipline over completeness.** A well-sized unit run honestly beats an oversized one that thins, truncates, or fabricates. The plan's scope check is load-bearing, not a formality.
-- **Auto-retry caps at one pass.** If the Critic threshold trips, deeper research runs once, then re-Critic. If the second pass still trips threshold, ship anyway with the flags surfaced prominently. Never loop indefinitely.
-- **Show retries happening.** When auto-retry triggers, tell the user in one sentence what's being re-researched and why. Don't run silently.
+- **The gaps section is adversarial by construction.** It's not the producing register self-reporting; it's an explicit reviewer pass against the six-flag taxonomy.
+- **Synthesis-pattern naming is required.** The executive summary is built from the pattern statement, not improvised at write-time.
+- **Standalone briefs.** Every invocation is self-contained; the brief reads cleanly to someone who has no context on the user's work.
+- **Voice is neutral-analytical.** Not performatively casual, not academic-stiff, not content-marketing.
+- **Scope discipline over completeness.** A well-sized unit run honestly beats an oversized one that thins, truncates, or fabricates.
+- **Auto-retry caps at one pass.** If the gaps-section review surfaces blocking flags, re-research runs once, then ships even if flags remain — with the flags surfaced prominently. Never loop indefinitely.
 
 ## Usage tip
 
@@ -210,7 +184,7 @@ Heavy topics — broad categories, long timespans, many subjects — run stronge
 **Civic / policy:**
 > "I got a letter from my HOA about proposed new rules. Is this action legal in my state, what are the precedents, and what should I know before the next board meeting?"
 
-In each case: the skill runs intake (unless `run as-is` was invoked), proposes a plan, executes the research, runs a Critic review pass that may trigger one auto-retry of deeper research, and delivers a brief following the five-section output contract — with surviving Critic flags surfaced as the gaps section.
+In each case: the skill runs intake (unless `run as-is` was invoked), proposes a plan, executes the research with synthesis-pattern naming, runs an adversarial gaps-section review, and delivers a brief following the five-section output contract.
 
 ## What this skill is NOT
 
@@ -221,15 +195,15 @@ In each case: the skill runs intake (unless `run as-is` was invoked), proposes a
 - Not a content generator. The brief is a research artifact, not a draft of a blog post, pitch deck, or essay.
 - Not persistent. v1 doesn't remember prior research sessions. If the user wants continuity across sessions, they bring the prior brief as input themselves.
 
-## Offering feedback (at end of brief)
+## Offering feedback (in chat, not in brief)
 
-After delivering the brief, the skill offers the user a low-friction way to send feedback to the skill's author. Not mandatory, not pushy — a single offer at the end.
+After delivering the brief, offer feedback capture in chat. This is process register — it does not appear in the brief itself.
 
-Exact wording the skill uses:
+Exact wording the skill uses (in chat, after the brief):
 
-> "If this brief did or didn't land for your decision, I'd like to hear about it. Say 'feedback' and I'll put together a copy-paste-ready block for you to email — already formatted with your question, the brief summary, and the gaps flagged. You'd just add one line of reaction."
+> "If this brief did or didn't land for your decision, I'd like to hear about it. Say `feedback` and I'll put together a copy-paste-ready block for you to email — already formatted with your question, the brief summary, and the gaps flagged. You'd just add one line of reaction."
 
-If the user says "feedback" (or equivalent: "yes," "send feedback," "help me send it"), compose the block using this template exactly:
+If the user says `feedback` (or equivalent: "yes," "send feedback," "help me send it"), compose the block using this template exactly:
 
 ```
 Subject: [research-director feedback] <one-line summary of the question>
@@ -256,7 +230,7 @@ Then tell the user:
 
 **Rules:**
 - Don't offer feedback more than once per session.
-- Don't offer if the user has already expressed frustration — at that point, a feedback offer reads tone-deaf. Just note the email quietly at the bottom of the brief with no prompt.
+- Don't offer if the user has already expressed frustration — at that point, a feedback offer reads tone-deaf. Just note the email quietly with no prompt.
 - Never send the email for the user. The skill composes; the user sends.
 - If the user provides a reaction inline in chat rather than emailing, acknowledge it. Don't push them to the email path.
 
@@ -264,7 +238,7 @@ Then tell the user:
 
 This is v1 beta — early and incomplete by design. Feedback of any kind (positive, negative, feature request, bug) goes to `macmakesproducts+research-director@gmail.com`.
 
-**Fastest path:** after a brief, say "feedback" and the skill composes a ready-to-send email block with all the context pre-filled. You just add one line of reaction. See "Offering feedback" above.
+**Fastest path:** after a brief, say `feedback` in chat and the skill composes a ready-to-send email block with all the context pre-filled. You just add one line of reaction.
 
 Or write from scratch — either works. A real example (the question you brought, what the brief produced, where it did or didn't land) is worth more than any amount of abstract feedback.
 
@@ -272,4 +246,4 @@ Feedback is the spec.
 
 ## Version
 
-v1.1.0 beta — 2026-04-29. (v1.0.1 shipped 2026-04-23 with frontmatter description shrink. v1.1.0 adds the Critic review pass — Phase 4 — with six-flag taxonomy, threshold-driven auto-retry, and the `/critic [1-5]` dial. Critic flags now construct the Gaps section of the brief.)
+v1.2.0 beta — 2026-04-30. (v1.0 shipped 2026-04-21. v1.0.1 shipped 2026-04-23 with frontmatter description shrink. v1.1.0 shipped 2026-04-29 with the Critic phase + dial. v1.2.0 redesigns based on v1 eval findings: explicit process/product register separation eliminates phase narration leak; Critic phase replaced by an adversarial gaps-section review focused where measurement is reliable; `/critic [1-5]` dial removed pending v2 eval evidence; synthesis-pattern naming added to Phase 3 to address synthesis-depth signal in v1 data.)
