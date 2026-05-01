@@ -26,6 +26,12 @@
 
 > Bring a question with real stakes. The shop shapes it, plans the research, reads the web, and brings you back a brief you can act on.
 
+> **Two doors in.**  
+> The **walk-in** is this skill — free, runs in claude.ai, decent across most jobs. Catches what the room can hold.  
+> The **back room** is [`research-director`](https://pypi.org/project/research-director/) on PyPI — the same shop, structurally guaranteed output, JSON sidecar, scriptable. For when the brief has to come out the same way every time.  
+>  
+> Most folks start with the walk-in. Some never need anything else. Read on if you want to know what's behind the curtain.
+
 ---
 
 ## ═══╡ THE FLOW ╞═══
@@ -43,19 +49,35 @@
 
 ## ═══╡ TAKE IT HOME ╞═══
 
-**Walk-in** (download + upload):
+**Walk-in** — the free skill, runs in claude.ai:
 
 1. Grab [`research-director.skill`](./research-director.skill) from this repo.
 2. Claude.ai → Settings → Capabilities → Skills → Upload skill.
 3. Select the file. Done. About 30 seconds.
 
-**By appointment** (clone):
+**Back room** — the CLI, structurally guaranteed output:
+
+```bash
+pip install research-director
+export ANTHROPIC_API_KEY='sk-ant-...'
+rd "your question with real stakes"
+```
+
+Two files land in your current directory: `brief-YYYY-MM-DD-HHMM.md` and `brief-YYYY-MM-DD-HHMM.json`. The markdown is the brief; the JSON is the same data structured for pipelines, dashboards, post-processing. Source: [`research-director-cli`](https://github.com/macmakesproducts/research-director-cli) · PyPI: [`research-director`](https://pypi.org/project/research-director/).
+
+**Claude Code** — slash command wrapping the CLI:
+
+```bash
+mkdir -p ~/.claude/skills/research-director
+# Drop the SKILL.md from the CLI repo's claude_code_skill/ dir
+# Then in any Claude Code session: /research-director "your question"
+```
+
+**By appointment** — clone this repo if you want to read the SKILL.md or fork the pattern:
 
 ```bash
 git clone https://github.com/macmakesproducts/research-director.git
 ```
-
-Point Claude Code or the Claude Skills CLI at the directory.
 
 ---
 
@@ -171,6 +193,8 @@ A Google search won't quite do it. Hiring an analyst is overkill. That's the mid
 3. **A real second look in the gaps section.** Before the brief ships, the gaps section is authored by an explicit reviewer pass against six failure categories — not the producer self-reporting on its own work. The producer doesn't grade its own paper.
 4. **Honest about its own limits.** Gaps and per-finding confidence ratings are non-optional.
 
+**Honest note about the skill version:** Single-turn Claude skills can't *mechanically* enforce the output contract. The skill follows it most of the time, but the model occasionally renames sections ("Bottom line" instead of "Executive summary") or skips structural elements. If you need every brief to come out the same way every time — for parsing, archives, evals, or anything programmatic — that's what the [CLI](https://pypi.org/project/research-director/) is for. The CLI splits research from rendering: Claude produces the data, Python deterministically renders the brief. The contract becomes mechanical.
+
 ---
 
 ## ═══╡ A NOTE ON "BETA" ╞═══
@@ -189,9 +213,9 @@ A Google search won't quite do it. Hiring an analyst is overkill. That's the mid
 ```
 
 Known limits in v1:
-- Single format (Claude Skill). GPT and GitHub-runnable versions on the roadmap.
-- Single output shape. No domain-specific modes.
+- **Structural inconsistency.** Single-turn skills can't mechanically guarantee the output contract — the model interprets prose-spec as a strong suggestion. Most briefs come out shaped right. Some don't. If "every time, the same way" matters, use the [CLI](https://pypi.org/project/research-director/).
 - Source quality inherits from whatever research tools your Claude session has.
+- One output shape. No domain-specific modes.
 - No persistence across sessions.
 
 ---
@@ -217,7 +241,8 @@ Real examples beat abstract feedback every time. One line, ten lines, whatever.
 ## ═══╡ PAPERWORK ╞═══
 
 License: MIT — see [`LICENSE`](./LICENSE).  
-Changelog: [`CHANGELOG.md`](./CHANGELOG.md).
+Changelog: [`CHANGELOG.md`](./CHANGELOG.md).  
+CLI version: [`research-director-cli`](https://github.com/macmakesproducts/research-director-cli) · [`pip install research-director`](https://pypi.org/project/research-director/).
 
 ---
 
