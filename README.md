@@ -1,3 +1,7 @@
+> **📦 The Research Director _skill_ has moved.** Its canonical home is now **[macmakesproducts/researchdirector](https://github.com/macmakesproducts/researchdirector)** — install the portable, cross-platform skill from there. **This repo remains the home of the Research Director _CLI_.**
+
+---
+
 ```
  ██▀███  ▓█████   ██████ ▓█████ ▄▄▄       ██▀███   ▄████▄   ██░ ██
 ▓██ ▒ ██▒▓█   ▀ ▒██    ▒ ▓█   ▀▒████▄    ▓██ ▒ ██▒▒██▀ ▀█  ▓██░ ██▒
@@ -73,7 +77,7 @@ mkdir -p ~/.claude/skills/research-director
 # Then in any Claude Code session: /research-director "your question"
 ```
 
-**By appointment** — clone this repo if you want to read the SKILL.md or fork the pattern:
+**By appointment** — clone this repo if you want to read the SKILL.md or fork the pattern (note: the canonical skill now lives at [macmakesproducts/researchdirector](https://github.com/macmakesproducts/researchdirector)):
 
 ```bash
 git clone https://github.com/macmakesproducts/research-director.git
